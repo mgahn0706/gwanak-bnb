@@ -29,7 +29,7 @@ export default function GuestFilterSelectPopover() {
       <PopoverTrigger asChild>
         <Button variant="outline">Open Popover</Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent align="end">
         <PopoverHeader>
           <PopoverTitle>Title</PopoverTitle>
           <PopoverDescription>Description text here.</PopoverDescription>
