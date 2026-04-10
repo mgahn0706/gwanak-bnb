@@ -4,7 +4,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import RecommendationPopover from "./LocationRecommendationPopover";
+import RecommendationPopover from "./LocationRecommendationAutocomplete";
 import SearchBar from "./SearchBar";
 import { useLocationAutocomplete } from "@/hooks/useLocationAutocomplete";
 
