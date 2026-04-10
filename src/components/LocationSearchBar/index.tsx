@@ -6,7 +6,11 @@ import {
   Waves,
 } from "lucide-react";
 
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import RecommendationPopover from "./LocationRecommendationPopover";
 import SearchBar from "./SearchBar";
@@ -52,9 +56,20 @@ const DEFAULT_RECOMMENDATIONS = [
 const LocationSearchBar = () => {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <SearchBar />
-      </PopoverTrigger>
+      <PopoverAnchor asChild>
+        <SearchBar
+          inputSlot={
+            <PopoverTrigger asChild>
+              <input
+                id="location-search-input"
+                type="text"
+                placeholder="여행할 지역이나 도시를 검색해보세요"
+                className="w-full border-0 bg-transparent p-0 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+            </PopoverTrigger>
+          }
+        />
+      </PopoverAnchor>
       <RecommendationPopover items={DEFAULT_RECOMMENDATIONS} />
     </Popover>
   );

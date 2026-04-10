@@ -19,6 +19,7 @@ const RecommendationPopover = ({ items }: RecommendationPopoverProps) => {
     <PopoverContent
       align="start"
       sideOffset={8}
+      onOpenAutoFocus={(event) => event.preventDefault()}
       className="w-[min(26rem,calc(100vw-1rem))] rounded-[1.5rem] border border-border/70 bg-background p-2 shadow-[0_24px_60px_-34px_rgba(15,23,42,0.28)]"
     >
       <section className="overflow-hidden rounded-[1.1rem] bg-muted/35">
