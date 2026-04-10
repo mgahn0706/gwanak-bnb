@@ -51,11 +51,7 @@ export const useLocationAutocomplete = () => {
       (item) => matchesRecommendation(item, normalizedQuery, disassembledQuery)
     );
 
-    setRecommendations(
-      newRecommendations.length > 0
-        ? newRecommendations
-        : DUMMY_AUTOCOMPLETE_RECOMMENDATIONS
-    );
+    setRecommendations(newRecommendations);
   }, [query]);
 
   return {
