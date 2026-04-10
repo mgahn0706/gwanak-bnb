@@ -9,7 +9,14 @@ import SearchBar from "./SearchBar";
 import { useLocationAutocomplete } from "@/hooks/useLocationAutocomplete";
 
 const LocationSearchBar = () => {
-  const { query, recommendations, setQuery } = useLocationAutocomplete();
+  const {
+    activeRecommendationIndex,
+    handleQueryChange,
+    handleQueryKeyDown,
+    handleRecommendationSelect,
+    query,
+    recommendations,
+  } = useLocationAutocomplete();
 
   return (
     <Popover>
@@ -22,7 +29,8 @@ const LocationSearchBar = () => {
                 type="text"
                 placeholder="여행지 검색"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={handleQueryChange}
+                onKeyDown={handleQueryKeyDown}
                 className="w-full border-0 bg-transparent p-0 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
             </PopoverTrigger>
@@ -30,8 +38,9 @@ const LocationSearchBar = () => {
         />
       </PopoverAnchor>
       <RecommendationPopover
+        activeIndex={activeRecommendationIndex}
         items={recommendations}
-        onSelect={(title) => setQuery(title)}
+        onSelect={handleRecommendationSelect}
       />
     </Popover>
   );

@@ -2,11 +2,13 @@ import type { RecommendedLocationItem } from "@/types";
 import RecommendedLocationListItem from "./RecommendedLocationListItem";
 
 interface RecommendedLocationListProps {
+  activeIndex?: number | null;
   items: readonly RecommendedLocationItem[];
   onSelect?: (title: string) => void;
 }
 
 const RecommendedLocationList = ({
+  activeIndex,
   items,
   onSelect,
 }: RecommendedLocationListProps) => {
@@ -20,10 +22,11 @@ const RecommendedLocationList = ({
 
   return (
     <div className="grid gap-0.5 p-1.5">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <RecommendedLocationListItem
           key={item.title}
           icon={item.icon}
+          isActive={activeIndex === index}
           title={item.title}
           subtitle={item.subtitle}
           onSelect={onSelect}

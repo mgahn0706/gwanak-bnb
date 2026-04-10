@@ -4,11 +4,13 @@ import RecommendedLocationList from "./RecommendedLocationList";
 import type { RecommendedLocationItem } from "@/types";
 
 interface RecommendationPopoverProps {
+  activeIndex?: number | null;
   items: readonly RecommendedLocationItem[];
   onSelect?: (title: string) => void;
 }
 
 const RecommendationPopover = ({
+  activeIndex,
   items,
   onSelect,
 }: RecommendationPopoverProps) => {
@@ -26,7 +28,11 @@ const RecommendationPopover = ({
           </span>
         </div>
         <div className="max-h-72 overflow-y-auto">
-          <RecommendedLocationList items={items} onSelect={onSelect} />
+          <RecommendedLocationList
+            activeIndex={activeIndex}
+            items={items}
+            onSelect={onSelect}
+          />
         </div>
       </section>
     </PopoverContent>
