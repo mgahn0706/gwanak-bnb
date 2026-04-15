@@ -1,35 +1,17 @@
 import { useEffect, useState, type ChangeEvent, type KeyboardEvent } from "react";
-import { disassemble } from "es-hangul";
 
-import {
-  DEFAULT_RECOMMENDATIONS,
-  DUMMY_AUTOCOMPLETE_RECOMMENDATIONS,
-} from "@/fixtures/data";
-import type { RecommendedLocationItem } from "@/types";
+import { DEFAULT_RECOMMENDATIONS } from "@/fixtures/data";
+import { getLocationIcon } from "@/lib/location-icons";
+import type { LocationSearchResponse, RecommendedLocationItem } from "@/types";
 
-const normalizeText = (value: string) => value.trim().toLowerCase();
-const disassembleText = (value: string) => disassemble(normalizeText(value));
-
-const includesAutocompleteQuery = (
-  sourceText: string,
-  normalizedQuery: string,
-  disassembledQuery: string
-) => {
-  const normalizedSourceText = normalizeText(sourceText);
-
-  return (
-    normalizedSourceText.includes(normalizedQuery) ||
-    disassembleText(sourceText).includes(disassembledQuery)
-  );
-};
-
-const matchesRecommendation = (
-  item: RecommendedLocationItem,
-  normalizedQuery: string,
-  disassembledQuery: string
-) =>
-  includesAutocompleteQuery(item.title, normalizedQuery, disassembledQuery) ||
-  includesAutocompleteQuery(item.subtitle, normalizedQuery, disassembledQuery);
+const mapRecommendations = (
+  items: LocationSearchResponse["data"]
+): RecommendedLocationItem[] =>
+  items.map((item) => ({
+    icon: getLocationIcon(item.iconKey),
+    title: item.title,
+    subtitle: item.subtitle,
+  }));
 
 export const useLocationAutocomplete = () => {
   const [query, setQuery] = useState("");
@@ -42,22 +24,39 @@ export const useLocationAutocomplete = () => {
   >(DEFAULT_RECOMMENDATIONS);
 
   useEffect(() => {
-    const normalizedQuery = normalizeText(typedQuery);
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const searchParams = new URLSearchParams();
 
-    if (normalizedQuery === "") {
-      setRecommendations(DEFAULT_RECOMMENDATIONS);
-      setActiveRecommendationIndex(null);
-      return;
-    }
+        if (typedQuery.trim() !== "") {
+          searchParams.set("q", typedQuery);
+        }
 
-    const disassembledQuery = disassembleText(typedQuery);
+        const response = await fetch(`/api/locations/search?${searchParams.toString()}`, {
+          signal: controller.signal,
+        });
 
-    const newRecommendations = DUMMY_AUTOCOMPLETE_RECOMMENDATIONS.filter(
-      (item) => matchesRecommendation(item, normalizedQuery, disassembledQuery)
-    );
+        if (!response.ok) {
+          throw new Error("Failed to fetch location recommendations");
+        }
 
-    setRecommendations(newRecommendations);
-    setActiveRecommendationIndex(null);
+        const payload = (await response.json()) as LocationSearchResponse;
+
+        setRecommendations(mapRecommendations(payload.data));
+        setActiveRecommendationIndex(null);
+      } catch (error) {
+        if (!(error instanceof DOMException && error.name === "AbortError")) {
+          setRecommendations(DEFAULT_RECOMMENDATIONS);
+          setActiveRecommendationIndex(null);
+        }
+      }
+    }, 180);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeoutId);
+    };
   }, [typedQuery]);
 
   const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
