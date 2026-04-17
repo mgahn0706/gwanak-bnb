@@ -3,12 +3,17 @@ import {
   PopoverAnchor,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import type { ComponentProps } from "react";
 
 import RecommendationPopover from "./LocationRecommendationAutocomplete";
 import SearchBar from "./SearchBar";
 import { useLocationAutocomplete } from "@/hooks/useLocationAutocomplete";
 
-const LocationSearchBar = () => {
+interface LocationSearchBarProps {
+  triggerClassName?: ComponentProps<typeof SearchBar>["className"];
+}
+
+const LocationSearchBar = ({ triggerClassName }: LocationSearchBarProps) => {
   const {
     activeRecommendationIndex,
     handleQueryChange,
@@ -22,6 +27,7 @@ const LocationSearchBar = () => {
     <Popover>
       <PopoverAnchor asChild>
         <SearchBar
+          className={triggerClassName}
           inputSlot={
             <PopoverTrigger asChild>
               <input

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ComponentProps } from "react";
 import { Minus, Plus } from "lucide-react";
 import {
   Popover,
@@ -25,7 +26,13 @@ const FILTER_LABELS: Record<
   pets: { label: "반려동물", description: "보조동물을 동반하시나요?" },
 };
 
-export default function GuestFilterSelectPopover() {
+interface GuestFilterSelectPopoverProps {
+  triggerClassName?: ComponentProps<typeof SearchBar>["className"];
+}
+
+export default function GuestFilterSelectPopover({
+  triggerClassName,
+}: GuestFilterSelectPopoverProps) {
   const [guestFilter, setGuestFilter] = useState<GuestFilter>({
     adult: 0,
     kids: 0,
@@ -46,6 +53,7 @@ export default function GuestFilterSelectPopover() {
         <SearchBar
           as="div"
           heading="게스트"
+          className={triggerClassName}
           inputSlot={
             <div className="w-full text-sm font-medium text-foreground">
               {triggerLabel}
