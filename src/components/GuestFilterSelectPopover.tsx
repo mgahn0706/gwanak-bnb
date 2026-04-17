@@ -6,6 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import SearchBar from "./LocationSearchBar/SearchBar";
 
 interface GuestFilter {
   adult: number;
@@ -31,16 +32,26 @@ export default function GuestFilterSelectPopover() {
     infant: 0,
     pets: 0,
   });
+  const totalGuests = guestFilter.adult + guestFilter.kids;
+  const triggerLabel =
+    totalGuests > 0
+      ? `게스트 ${totalGuests}명${
+          guestFilter.infant > 0 ? `, 유아 ${guestFilter.infant}명` : ""
+        }${guestFilter.pets > 0 ? `, 반려동물 ${guestFilter.pets}마리` : ""}`
+      : "게스트 추가";
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className="h-auto  justify-between rounded-full px-4 py-3 text-left shadow-sm"
-        >
-          <span>검색</span>
-        </Button>
+        <SearchBar
+          as="div"
+          heading="게스트"
+          inputSlot={
+            <div className="w-full text-sm font-medium text-foreground">
+              {triggerLabel}
+            </div>
+          }
+        />
       </PopoverTrigger>
       <PopoverContent align="end" className="w-96 rounded-3xl p-4">
         <section className="overflow-hidden rounded-2xl bg-background">
