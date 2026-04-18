@@ -5,7 +5,7 @@ import { StayService } from "../services/stay.service.js";
 export class StayController {
   constructor(private readonly stayService: StayService) {}
 
-  search = (request: Request, response: Response) => {
+  search = async (request: Request, response: Response) => {
     const location =
       typeof request.query.location === "string"
         ? request.query.location
@@ -27,7 +27,7 @@ export class StayController {
         ? Number.parseInt(request.query.pets, 10)
         : undefined;
 
-    const stays = this.stayService.searchStays({
+    const stays = await this.stayService.searchStays({
       location,
       adult,
       children,

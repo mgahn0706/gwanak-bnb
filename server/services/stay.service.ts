@@ -4,18 +4,19 @@ import type { SearchStaysParams, StaySearchItem } from "../types/stay.js";
 export class StayService {
   constructor(private readonly stayRepository: StayRepository) {}
 
-  searchStays({
+  async searchStays({
     location,
     adult = 0,
     children = 0,
     pets = 0,
-  }: SearchStaysParams): StaySearchItem[] {
+  }: SearchStaysParams): Promise<StaySearchItem[]> {
     const normalizedAdult = Number.isNaN(adult) ? 0 : Math.max(adult, 0);
     const normalizedChildren = Number.isNaN(children) ? 0 : Math.max(children, 0);
     const normalizedPets = Number.isNaN(pets) ? 0 : Math.max(pets, 0);
 
-    return this.stayRepository
-      .search(location ?? "")
+    const stays = await this.stayRepository.search(location ?? "");
+
+    return stays
       .filter((stay) => stay.maximumGuest.adult >= normalizedAdult)
       .filter((stay) => stay.maximumGuest.children >= normalizedChildren)
       .filter((stay) => normalizedPets === 0 || stay.isPetAvailable)

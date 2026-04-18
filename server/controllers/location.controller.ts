@@ -5,7 +5,7 @@ import { LocationService } from "../services/location.service.js";
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
-  search = (request: Request, response: Response) => {
+  search = async (request: Request, response: Response) => {
     const query =
       typeof request.query.q === "string" ? request.query.q : undefined;
     const limit =
@@ -13,7 +13,7 @@ export class LocationController {
         ? Number.parseInt(request.query.limit, 10)
         : undefined;
 
-    const locations = this.locationService.searchLocations({ query, limit });
+    const locations = await this.locationService.searchLocations({ query, limit });
 
     response.status(200).json({
       data: locations,

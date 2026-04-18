@@ -1,16 +1,20 @@
-import { staySeedData } from "../data/stay.data.js";
+import type { Collection } from "mongodb";
+
 import type { StayRecord } from "../types/stay.js";
 import { searchIncludes } from "../utils/search.js";
 
 export class StayRepository {
-  search(location: string): StayRecord[] {
+  constructor(private readonly stayCollection: Collection<StayRecord>) {}
+
+  async search(location: string): Promise<StayRecord[]> {
     const trimmedLocation = location.trim();
+    const stays = await this.stayCollection.find().toArray();
 
     if (!trimmedLocation) {
-      return [...staySeedData];
+      return stays;
     }
 
-    return staySeedData.filter((stay) => {
+    return stays.filter((stay) => {
       const searchableText = [stay.location, ...stay.keywords];
 
       return searchableText.some((field) => searchIncludes(field, trimmedLocation));
