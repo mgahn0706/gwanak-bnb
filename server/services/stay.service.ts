@@ -1,0 +1,32 @@
+import { StayRepository } from "../repositories/stay.repository.js";
+import type { SearchStaysParams, StaySearchItem } from "../types/stay.js";
+
+export class StayService {
+  constructor(private readonly stayRepository: StayRepository) {}
+
+  searchStays({
+    location,
+    adult = 0,
+    children = 0,
+    pets = 0,
+  }: SearchStaysParams): StaySearchItem[] {
+    const normalizedAdult = Number.isNaN(adult) ? 0 : Math.max(adult, 0);
+    const normalizedChildren = Number.isNaN(children) ? 0 : Math.max(children, 0);
+    const normalizedPets = Number.isNaN(pets) ? 0 : Math.max(pets, 0);
+
+    return this.stayRepository
+      .search(location ?? "")
+      .filter((stay) => stay.maximumGuest.adult >= normalizedAdult)
+      .filter((stay) => stay.maximumGuest.children >= normalizedChildren)
+      .filter((stay) => normalizedPets === 0 || stay.isPetAvailable)
+      .map(({ id, image, location: stayLocation, price, rating, maximumGuest, isPetAvailable }) => ({
+        id,
+        image,
+        location: stayLocation,
+        price,
+        rating,
+        maximumGuest,
+        isPetAvailable,
+      }));
+  }
+}

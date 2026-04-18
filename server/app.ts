@@ -3,6 +3,7 @@ import express from "express";
 
 import { errorHandler } from "./middlewares/error-handler.js";
 import { locationRouter } from "./routes/location.routes.js";
+import { stayRouter } from "./routes/stay.routes.js";
 
 export const app = express();
 
@@ -14,5 +15,6 @@ app.get("/api/health", (_request, response) => {
 });
 
 app.use("/api/locations", locationRouter);
+app.use("/api/stays", stayRouter);
 
 app.use(errorHandler);
