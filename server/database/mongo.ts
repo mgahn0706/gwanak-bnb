@@ -39,9 +39,20 @@ export const connectToMongo = async (): Promise<DatabaseCollections> => {
   await client.connect();
 
   const database = client.db(databaseName);
+  const collections = await database.listCollections().toArray();
+  const staysCollection = database.collection<StayRecord>("stays");
+  const staysCount = await staysCollection.countDocuments();
+
+  console.log("[mongo] connecting", {
+    uri: mongoUri,
+    databaseName,
+  });
+
+  console.log("[mongo] collections", collections);
+  console.log("[mongo] stays count", staysCount);
 
   return {
-    stays: database.collection<StayRecord>("stays"),
+    stays: staysCollection,
   };
 };
 
