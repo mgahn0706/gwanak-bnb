@@ -3,7 +3,6 @@ import express from "express";
 
 import type { DatabaseCollections } from "./database/mongo.js";
 import { errorHandler } from "./middlewares/error-handler.js";
-import { createLocationRouter } from "./routes/location.routes.js";
 import { createStayRouter } from "./routes/stay.routes.js";
 
 export const createApp = (collections: DatabaseCollections) => {
@@ -21,7 +20,6 @@ export const createApp = (collections: DatabaseCollections) => {
       message: "pong",
       routes: {
         health: true,
-        locations: true,
         stays: true,
       },
     });
@@ -35,7 +33,6 @@ export const createApp = (collections: DatabaseCollections) => {
     });
   });
 
-  app.use("/api/locations", createLocationRouter());
   app.use("/api/stays", createStayRouter(collections));
 
   app.use(errorHandler);

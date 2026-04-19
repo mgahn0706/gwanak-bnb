@@ -10,8 +10,7 @@
     "typecheck": "tsc -b && tsc -p tsconfig.server.json --noEmit",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start:server": "tsx server/server.ts",
-    "seed:server": "tsx server/seed.ts"
+    "start:server": "tsx server/server.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
