@@ -41,7 +41,9 @@ const getStaySearchResults = async ({
 
   const queryString = searchParams.toString();
   const requestPath =
-    queryString === "" ? "/api/stays/search" : `/api/stays/search?${queryString}`;
+    queryString === ""
+      ? "/api/stays/search"
+      : `/api/stays/search?${queryString}`;
 
   const response = await fetch(createApiUrl(requestPath));
 
@@ -57,7 +59,11 @@ const getStaySearchResults = async ({
 export const useStaySearch = () => {
   const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
 
-  const { data = [], error, isFetching } = useQuery({
+  const {
+    data = [],
+    error,
+    isFetching,
+  } = useQuery({
     queryKey: ["stay-search-results", searchParams],
     queryFn: () => getStaySearchResults(searchParams as SearchParams),
     enabled: searchParams !== null,

@@ -8,6 +8,9 @@ import { Button } from "./components/ui/button";
 import { useStaySearch } from "./hooks/useStaySearch";
 import type { GuestFilter } from "./types";
 
+const RESULT_PANEL_CLASS_NAME =
+  "w-full rounded-[1.75rem] border border-dashed border-border/80 bg-background px-6 py-12 text-center text-sm text-muted-foreground md:col-span-2 xl:col-span-3";
+
 function App() {
   const [locationQuery, setLocationQuery] = useState("");
   const [guestFilter, setGuestFilter] = useState<GuestFilter>({
@@ -17,6 +20,41 @@ function App() {
     pets: 0,
   });
   const { error, hasSearched, isFetching, results, search } = useStaySearch();
+
+  const renderSearchResults = () => {
+    if (!hasSearched) {
+      return null;
+    }
+
+    if (isFetching) {
+      return (
+        <div className={RESULT_PANEL_CLASS_NAME}>
+          검색 결과를 불러오는 중입니다.
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className={RESULT_PANEL_CLASS_NAME}>
+          Render 서버에서 숙소 검색 API를 찾지 못했습니다. 현재 배포된
+          서버에는 `/api/stays/search` 가 필요합니다.
+        </div>
+      );
+    }
+
+    if (results.length === 0) {
+      return (
+        <div className={RESULT_PANEL_CLASS_NAME}>
+          검색 조건에 맞는 숙소가 없습니다.
+        </div>
+      );
+    }
+
+    return results.map((result) => (
+      <StaySearchResultCard key={result.id} result={result} />
+    ));
+  };
 
   return (
     <section id="center">
@@ -44,24 +82,7 @@ function App() {
       </div>
       {hasSearched ? (
         <div className="grid w-full grid-cols-1 gap-6 pt-2 md:grid-cols-2 xl:grid-cols-3">
-          {isFetching ? (
-            <div className="w-full rounded-[1.75rem] border border-dashed border-border/80 bg-background px-6 py-12 text-center text-sm text-muted-foreground md:col-span-2 xl:col-span-3">
-              검색 결과를 불러오는 중입니다.
-            </div>
-          ) : error ? (
-            <div className="w-full rounded-[1.75rem] border border-dashed border-border/80 bg-background px-6 py-12 text-center text-sm text-muted-foreground md:col-span-2 xl:col-span-3">
-              Render 서버에서 숙소 검색 API를 찾지 못했습니다. 현재 배포된
-              서버에는 `/api/stays/search` 가 필요합니다.
-            </div>
-          ) : results.length > 0 ? (
-            results.map((result) => (
-              <StaySearchResultCard key={result.id} result={result} />
-            ))
-          ) : (
-            <div className="w-full rounded-[1.75rem] border border-dashed border-border/80 bg-background px-6 py-12 text-center text-sm text-muted-foreground md:col-span-2 xl:col-span-3">
-              검색 조건에 맞는 숙소가 없습니다.
-            </div>
-          )}
+          {renderSearchResults()}
         </div>
       ) : null}
     </section>
