@@ -44,7 +44,6 @@ export const connectToMongo = async (): Promise<DatabaseCollections> => {
   const staysCount = await staysCollection.countDocuments();
 
   console.log("[mongo] connecting", {
-    uri: mongoUri,
     databaseName,
   });
 
