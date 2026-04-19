@@ -23,14 +23,27 @@ const getStaySearchResults = async ({
     searchParams.set("location", location.trim());
   }
 
-  searchParams.set("adult", String(guestFilter.adult));
-  searchParams.set("children", String(guestFilter.kids));
-  searchParams.set("infant", String(guestFilter.infant));
-  searchParams.set("pets", String(guestFilter.pets));
+  if (guestFilter.adult > 0) {
+    searchParams.set("adult", String(guestFilter.adult));
+  }
 
-  const response = await fetch(
-    createApiUrl(`/api/stays/search?${searchParams.toString()}`)
-  );
+  if (guestFilter.kids > 0) {
+    searchParams.set("children", String(guestFilter.kids));
+  }
+
+  if (guestFilter.infant > 0) {
+    searchParams.set("infant", String(guestFilter.infant));
+  }
+
+  if (guestFilter.pets > 0) {
+    searchParams.set("pets", String(guestFilter.pets));
+  }
+
+  const queryString = searchParams.toString();
+  const requestPath =
+    queryString === "" ? "/api/stays/search" : `/api/stays/search?${queryString}`;
+
+  const response = await fetch(createApiUrl(requestPath));
 
   if (!response.ok) {
     throw new Error("Failed to fetch stay search results");
