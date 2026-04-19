@@ -10,14 +10,28 @@ export class StayRepository {
     const trimmedLocation = location.trim();
     const stays = await this.stayCollection.find().toArray();
 
+    console.log("[stayRepository.search] db fetch", {
+      location: trimmedLocation,
+      count: stays.length,
+      rawData: stays,
+    });
+
     if (!trimmedLocation) {
       return stays;
     }
 
-    return stays.filter((stay) => {
+    const matchedStays = stays.filter((stay) => {
       const searchableText = [stay.location, ...stay.keywords];
 
       return searchableText.some((field) => searchIncludes(field, trimmedLocation));
     });
+
+    console.log("[stayRepository.search] location-matched", {
+      location: trimmedLocation,
+      count: matchedStays.length,
+      matchedData: matchedStays,
+    });
+
+    return matchedStays;
   }
 }

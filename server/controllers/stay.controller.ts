@@ -35,6 +35,18 @@ export class StayController {
       pets,
     });
 
+    console.log("[stayController.search] response", {
+      query: {
+        location: location ?? "",
+        adult,
+        children,
+        infant,
+        pets,
+      },
+      count: stays.length,
+      data: stays,
+    });
+
     response.status(200).json({
       data: stays,
       meta: {

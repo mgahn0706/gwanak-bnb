@@ -15,11 +15,22 @@ export class StayService {
     const normalizedPets = Number.isNaN(pets) ? 0 : Math.max(pets, 0);
 
     const stays = await this.stayRepository.search(location ?? "");
-
-    return stays
+    const filteredStays = stays
       .filter((stay) => stay.maximumGuest.adult >= normalizedAdult)
       .filter((stay) => stay.maximumGuest.children >= normalizedChildren)
-      .filter((stay) => normalizedPets === 0 || stay.isPetAvailable)
+      .filter((stay) => normalizedPets === 0 || stay.isPetAvailable);
+
+    console.log("[stayService.searchStays] after filters", {
+      location: location ?? "",
+      adult: normalizedAdult,
+      children: normalizedChildren,
+      pets: normalizedPets,
+      beforeCount: stays.length,
+      afterCount: filteredStays.length,
+      filteredData: filteredStays,
+    });
+
+    return filteredStays
       .map(({ id, image, location: stayLocation, price, rating, maximumGuest, isPetAvailable }) => ({
         id,
         image,
